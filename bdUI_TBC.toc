@@ -1,0 +1,82 @@
+## Interface: 20400
+## Title: bdUI_TBC
+## Author: Blooblahguy
+## SavedVariables: BDUI_SAVE
+## SavedVariablesPerCharacter: BDUI_CHARACTER
+## X-oUF: bdUI-oUF
+
+#Libraries
+lib\LibStub\LibStub.lua
+lib\LibSpellRange-1.0\LibSpellRange-1.0.lua
+lib\LibMobHealth-4.0\LibMobHealth-4.0.lua
+lib\oUF\oUF.xml
+lib\oUF_CombatFader\oUF_CombatFader.lua
+lib\oUF_HealComm3\oUF_HealComm3.xml
+lib\oUF_ResComm\oUF_ResComm.xml
+lib\LibSimpleSticky\LibSimpleSticky.lua
+lib\bdMove\bdMove.lua
+lib\bdConfig\bdConfig.lua
+
+#Core
+core\init.lua
+core\compatibility.lua
+core\core.lua
+core\media.lua
+core\defaults.lua
+core\modules.lua
+core\load.lua
+
+#Actionbars
+modules\actionbars\core.lua
+modules\actionbars\actionbars.lua
+modules\actionbars\modules.lua
+
+#Bags
+modules\bags\core.lua
+modules\bags\bags.lua
+modules\bags\bank.lua
+modules\bags\loot.lua
+
+#Minimap
+modules\minimap\core.lua
+modules\minimap\minimap.lua
+modules\minimap\buttonframe.lua
+
+#Nameplates
+modules\nameplates\core.lua
+modules\nameplates\friendly.lua
+modules\nameplates\enemy.lua
+modules\nameplates\npc.lua
+modules\nameplates\nameplates.lua
+
+#Tooltips
+modules\tooltips\core.lua
+modules\tooltips\hover.lua
+modules\tooltips\tooltips.lua
+
+#Quests
+modules\quests\core.lua
+modules\quests\quests.lua
+modules\quests\xp.lua
+
+#Grid
+modules\grid\core.lua
+modules\grid\grid.lua
+
+#Chat
+modules\chat\core.lua
+modules\chat\bubbles.lua
+modules\chat\chat.lua
+
+#Buffs
+modules\buffs\buffs.lua
+
+#Unitframes
+modules\unitframes\core.lua
+modules\unitframes\unitframes.lua
+lib\oUF_Smooth\oUF_Smooth.lua
+
+#Quality of Life
+modules\qol\doubleclickbo.lua
+modules\qol\interrupted.lua
+modules\qol\errortext.lua
