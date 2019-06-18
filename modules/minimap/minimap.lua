@@ -16,6 +16,8 @@ local function load()
 	-- make minimap shape square
 	function GetMinimapShape() return "SQUARE" end
 
+	local inset = ((config.size * .25) / 2)
+
 	-- Rectangle
 	Minimap.background = CreateFrame("frame", "bdMinimap", Minimap)
 	Minimap.background:SetPoint("CENTER", Minimap, "CENTER", 0, 0)
@@ -27,13 +29,47 @@ local function load()
 	Minimap:SetMaskTexture("Interface\\Addons\\bdUI_TBC\\media\\rectangle.tga")
 	Minimap:SetWidth(config.size)
 	Minimap:SetHeight(config.size)
-	-- Minimap:SetHitRectInsets(0, 0, config.size/8, config.size/8)
-	-- Minimap:SetClampRectInsets(0, 0, -config.size/4, -config.size/4)
 	Minimap:EnableMouse(true)
-	-- Minimap:SetArchBlobRingScalar(0);
-	-- Minimap:SetQuestBlobRingScalar(0);
 	Minimap:ClearAllPoints()
-	Minimap:SetPoint("TOPRIGHT", bdParent, "TOPRIGHT", -30, -10)
+	Minimap:SetPoint("TOPRIGHT", bdParent, "TOPRIGHT", -32, -10)
+	bdMove:set_moveable(Minimap, nil, 0, 0)
+
+	Minimap.SetHitRectInsets = Minimap.SetHitRectInsets or noop
+	Minimap.SetClampRectInsets = Minimap.SetClampRectInsets or noop
+	Minimap.SetArchBlobRingScalar = Minimap.SetArchBlobRingScalar or noop
+	Minimap.SetQuestBlobRingScalar = Minimap.SetQuestBlobRingScalar or noop
+
+	Minimap:SetHitRectInsets(0, 0, -inset, inset)
+	Minimap:SetClampRectInsets(0, 0, -inset, inset)
+	Minimap:SetArchBlobRingScalar(0);
+	Minimap:SetQuestBlobRingScalar(0);
+
+	-- Zone
+	Minimap.zone = CreateFrame("frame", nil, Minimap)
+	Minimap.zone:Hide()
+	Minimap.zone.text = Minimap.zone:CreateFontString(nil)
+	Minimap.zone.text:SetFontObject("BDUI_MEDIUM")
+	Minimap.zone.text:SetPoint("TOPLEFT", Minimap.background, "TOPLEFT", 8, -8)
+	Minimap.zone.text:SetJustifyH("LEFT")
+	Minimap.zone.subtext = Minimap.zone:CreateFontString(nil)
+	Minimap.zone.subtext:SetFontObject("BDUI_MEDIUM")
+	Minimap.zone.subtext:SetPoint("TOPRIGHT", Minimap.background, "TOPRIGHT", -8, -8)
+	Minimap.zone.subtext:SetJustifyH("RIGHT")
+	Minimap.zone:RegisterEvent("ZONE_CHANGED")
+	Minimap.zone:RegisterEvent("ZONE_CHANGED_INDOORS")
+	Minimap.zone:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+	Minimap.zone:RegisterEvent("PLAYER_ENTERING_WORLD")
+	Minimap.zone:SetScript("OnEvent", function(self, event)
+		Minimap.zone.text:SetText(GetZoneText())
+		Minimap.zone.subtext:SetText(GetSubZoneText())
+	end)
+	-- Minimap.background:EnableMouse(true)
+	Minimap:SetScript("OnEnter", function()
+		Minimap.zone:Show()
+	end)
+	Minimap:SetScript("OnLeave", function()
+		Minimap.zone:Hide()
+	end)
 
 	-- Clock
 	if (not IsAddOnLoaded("Blizzard_TimeManager")) then

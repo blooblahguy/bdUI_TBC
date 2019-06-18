@@ -8,7 +8,7 @@ loader:SetScript("OnEvent", function(self, event, addon)
 		BDUI_SAVE = BDUI_SAVE or {}
 		bdUI.config = BDUI_SAVE
 		bdMove:set_save("BDUI_SAVE")
-		bdMove.spacing = 10
+		bdMove.spacing = bdUI.border
 
 		bdUI:print("Loaded. Enjoy.")
 		bdUI:do_action("loaded")

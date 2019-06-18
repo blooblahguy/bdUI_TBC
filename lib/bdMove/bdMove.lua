@@ -26,12 +26,13 @@ function bdMove:set_save(sv_string)
 end
 
 -- main moveable registration
-function bdMove:set_moveable(frame, rename, resize, yspacing, xspacing)
+function bdMove:set_moveable(frame, rename, left, top, right, bottom)
 	if (not bdMove.save) then print("bdMove needs SavedVariable to save positions") return end
-	if resize == nil then resize = true end
 	if rename == nil then rename = frame:GetName() end
-	yspacing = yspacing or bdMove.spacing
-	xspacing = xspacing or bdMove.spacing
+	left = left or 0
+	top = top or 0
+	right = right or left or 0
+	bottom = bottom or top or 0
 
 	-- get dimensions
 	local height = frame:GetHeight()
@@ -42,7 +43,7 @@ function bdMove:set_moveable(frame, rename, resize, yspacing, xspacing)
 	-- Create Mover Parent
 	local mover = CreateFrame("frame", rename, UIParent)
 	mover:EnableMouse(false)
-	mover:SetSize(width + (xspacing*2), height + (yspacing*2))
+	mover:SetSize(width + (right + left), height + (top + bottom))
 	mover:SetBackdrop({bgFile = bdMove.media.flat})
 	mover:SetBackdropColor(0,0,0,.6)
 	mover:SetFrameStrata("BACKGROUND")
@@ -59,19 +60,17 @@ function bdMove:set_moveable(frame, rename, resize, yspacing, xspacing)
 	mover.text:Hide()
 
 	-- Sizing
-	if (resize) then
-		hooksecurefunc(frame,"SetSize",function() 
-			local height = frame:GetHeight()
-			local width = frame:GetWidth()
-			mover:SetSize(width+2+border, height+2+border)
-		end)
-	end
+	hooksecurefunc(frame,"SetSize",function() 
+		local height = frame:GetHeight()
+		local width = frame:GetWidth()
+		mover:SetSize(width+2+border, height+2+border)
+	end)
 
 	-- Attach the frame to the mover
 	frame.mover = mover
 	mover.frame = frame
 	frame:ClearAllPoints()
-	frame:SetPoint("TOPRIGHT", mover, "TOPRIGHT", -xspacing, -yspacing)
+	frame:SetPoint("CENTER", mover, "CENTER", 0, 0)
 
 	-- Moving functionality
 	function mover:unlock()
@@ -83,7 +82,7 @@ function bdMove:set_moveable(frame, rename, resize, yspacing, xspacing)
 		mover:RegisterForDrag("LeftButton")
 		mover:SetFrameStrata("TOOLTIP")
 		mover:SetScript("OnDragStart", function(self) 
-			StickyFrames:StartMoving(self, bdMove.moveable_frames, 0, 0, 0, 0)
+			StickyFrames:StartMoving(self, bdMove.moveable_frames, bdUI.border, bdUI.border, bdUI.border, bdUI.border)
 		end)
 		mover:SetScript("OnDragStop", function(self) 
 			StickyFrames:StopMoving(self)
@@ -122,7 +121,7 @@ function bdMove:set_moveable(frame, rename, resize, yspacing, xspacing)
 				mover:SetPoint(point, relativeTo, relativePoint, math.floor(xOfs), math.floor(yOfs))
 			end
 		else
-			mover:SetPoint(point, relativeTo, relativePoint, math.floor(xOfs) + xspacing, math.floor(yOfs) + yspacing)
+			mover:SetPoint(point, relativeTo, relativePoint, math.floor(xOfs), math.floor(yOfs))
 		end
 	end
 	mover:position()
@@ -151,4 +150,10 @@ end
 function bdMove:reset_positions()
 	bdMove.save.positions = {}
 	ReloadUI()
+end
+
+-- controls, build once and move around
+bdMove.controls = CreateFrame("frame", nil, bdParent)
+function bdMove:attach_controls(frame)
+
 end

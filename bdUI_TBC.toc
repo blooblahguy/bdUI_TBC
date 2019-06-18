@@ -7,6 +7,7 @@
 
 #Libraries
 lib\LibStub\LibStub.lua
+lib\CallbackHandler-1.0\CallbackHandler-1.0.lua
 lib\LibSpellRange-1.0\LibSpellRange-1.0.lua
 lib\LibMobHealth-4.0\LibMobHealth-4.0.lua
 lib\oUF\oUF.xml
@@ -14,6 +15,7 @@ lib\oUF_CombatFader\oUF_CombatFader.lua
 lib\oUF_HealComm3\oUF_HealComm3.xml
 lib\oUF_ResComm\oUF_ResComm.xml
 lib\LibSimpleSticky\LibSimpleSticky.lua
+lib\oUF_TotemBar\oUF_TotemBar.lua
 lib\bdMove\bdMove.lua
 lib\bdConfig\bdConfig.lua
 

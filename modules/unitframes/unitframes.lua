@@ -122,7 +122,7 @@ local additional_elements = {
 		self.Buffs['growth-y'] = "UP"
 		self.Buffs['growth-x'] = "RIGHT"
 		self.Buffs.PostCreateIcon = function(buffs, button)
-			bdUI:set_backdrop(button)
+			bdUI:set_backdrop_basic(button)
 			button.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 			button:SetAlpha(0.8)
 		end
@@ -141,9 +141,9 @@ local additional_elements = {
 		self.Debuffs['growth-y'] = "UP"
 		self.Debuffs['growth-x'] = "LEFT"
 		self.Debuffs.PostCreateIcon = function(Debuffs, button)
-			bdUI:set_backdrop(button)
+			bdUI:set_backdrop_basic(button)
 			button.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
-			button:SetAlpha(0.8)
+			-- button:SetAlpha(0.8)
 		end
 	end,
 
@@ -160,11 +160,34 @@ local additional_elements = {
 		self.Auras['growth-y'] = "UP"
 		self.Auras['growth-x'] = "RIGHT"
 		self.Auras.PostCreateIcon = function(Debuffs, button)
-			bdUI:set_backdrop(button)
+			bdUI:set_backdrop_basic(button)
 			button.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
-			button:SetAlpha(0.8)
+			-- button:SetAlpha(0.8)
 		end
 	end,
+
+	totems = function(self, unit)
+		if (select(2, UnitClass("player")) ~= "SHAMAN") then return end
+
+		self.TotemHolder = CreateFrame("frame", "Totems", self)
+		self.TotemHolder:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, config.playertargetpowerheight + (bdUI.border * 2))
+		self.TotemHolder:SetFrameStrata("HIGH")
+		self.TotemHolder:SetSize(config.playertargetwidth, 4)
+		bdMove:set_moveable(self.TotemHolder)
+
+		self.TotemBar = {}
+		for i = 1, 4 do
+			local width = ((config.playertargetwidth + bdUI.border) / 4) - bdUI.border
+			self.TotemBar[i] = CreateFrame("StatusBar", nil, self)
+			self.TotemBar[i]:SetStatusBarTexture(bdUI.media.flat)
+			self.TotemBar[i]:SetSize(width, 4)
+			self.TotemBar[i]:SetMinMaxValues(0, 1)
+			self.TotemBar[i]:SetPoint("LEFT", self.TotemHolder, "LEFT", (width + bdUI.border) * (i-1), 0)
+			bdUI:set_backdrop(self.TotemBar[i])
+			self.TotemBar[i].bg = self.TotemBar[i].background
+			self.TotemBar[i].bg.multiplier = 0.2
+		end
+	end
 }
 
 local custom_layout = {
@@ -174,6 +197,7 @@ local custom_layout = {
 		additional_elements.combat(self, unit)
 		additional_elements.power(self, unit)
 		additional_elements.buffs(self, unit)
+		additional_elements.totems(self, unit)
 
 		self.Buffs.CustomFilter = function(element, unit, button, name, rank, texture, count, debuffType, duration, expiration)
 			if (UnitIsUnit(unit, "player") and duration ~= 0 and duration < 180) then
@@ -184,9 +208,14 @@ local custom_layout = {
 		end
 
 		self:SetSize(config.playertargetwidth, config.playertargetheight)
-
+		self.Buffs.size = 22
 		self.Name:SetPoint("TOPRIGHT", self.Power, "TOPLEFT", -4, bdUI.border)
 		self.Curhp:SetPoint("RIGHT", self.Health, "LEFT", -4, -4)
+
+		if (self.TotemHolder) then
+			self.Buffs:SetPoint("BOTTOMLEFT", self.TotemHolder, "TOPLEFT", 0, bdUI.border)
+			self.Buffs:SetPoint("BOTTOMRIGHT", self.TotemHolder, "TOPRIGHT", 0, bdUI.border)
+		end
 	end,
 	target = function(self, unit)
 		additional_elements.castbar(self, unit, "right")
@@ -264,7 +293,7 @@ local function layout(self, unit)
 	self.RaidTargetIndicator:SetPoint('CENTER', self, 0, 0)
 
 	-- Tags
-	oUF.Tags.Events['curhp'] = 'UNIT_HEALTH_FREQUENT UNIT_HEALTH UNIT_MAXHEALTH'
+	oUF.Tags.Events['curhp'] = 'UNIT_HEALTH UNIT_MAXHEALTH'
 	oUF.Tags.Methods['curhp'] = function(unit)
 		local hp, hpMax = UnitHealth(unit), UnitHealthMax(unit)
 		if (not UnitIsPlayer(unit)) then

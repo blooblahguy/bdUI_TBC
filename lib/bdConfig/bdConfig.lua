@@ -1,0 +1,1 @@
+bdConfig = CreateFrame("frame", nil, UIParent)

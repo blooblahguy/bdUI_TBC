@@ -3,15 +3,18 @@ local config = bdUI.minimap.config
 function bdUI.minimap:create_button_frame()
 
 	-- Button frame
-	Minimap.buttonFrame = CreateFrame("frame", nil, Minimap)
+	Minimap.buttonFrame = CreateFrame("frame", "bdButtonFrame", Minimap)
 	Minimap.buttonFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 	Minimap.buttonFrame:RegisterEvent("GARRISON_UPDATE")
 	Minimap.buttonFrame:RegisterEvent("PLAYER_XP_UPDATE")
 	Minimap.buttonFrame:RegisterEvent("PLAYER_LEVEL_UP")
 	Minimap.buttonFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 	Minimap.buttonFrame:RegisterEvent("UPDATE_FACTION")
-	Minimap.buttonFrame:SetPoint("TOPLEFT", Minimap.background, "BOTTOMLEFT", 2, -6)
-	Minimap.buttonFrame:SetPoint("BOTTOMRIGHT", Minimap.background, "BOTTOMRIGHT", -2, -28)
+	Minimap.buttonFrame:SetSize(Minimap.background:GetWidth(), 30)
+	Minimap.buttonFrame:SetPoint("TOP", Minimap.background, "BOTTOM", 0, -bdUI.border)
+	-- Minimap.buttonFrame:SetPoint("TOPLEFT", Minimap.background, "BOTTOMLEFT", 2, -6)
+	-- Minimap.buttonFrame:SetPoint("BOTTOMRIGHT", Minimap.background, "BOTTOMRIGHT", -2, -28)
+	bdMove:set_moveable(Minimap.buttonFrame)
 
 	local ignoreFrames = {}
 	local hideTextures = {}
@@ -21,11 +24,12 @@ function bdUI.minimap:create_button_frame()
 	manualTarget['MiniMapMailFrame'] = true
 	manualTarget['COHCMinimapButton'] = true
 	manualTarget['ZygorGuidesViewerMapIcon'] = true
+	manualTarget['MiniMapBattlefieldFrame'] = true
 
+	ignoreFrames['bdButtonFrame'] = true
 	ignoreFrames['MinimapBackdrop'] = true
 	ignoreFrames['GameTimeFrame'] = true
 	ignoreFrames['MinimapVoiceChatFrame'] = true
-	--blizzFrames['QueueStatusMinimapButton'] = true
 	ignoreFrames['TimeManagerClockButton'] = true
 
 	hideTextures['Interface\\Minimap\\MiniMap-TrackingBorder'] = true

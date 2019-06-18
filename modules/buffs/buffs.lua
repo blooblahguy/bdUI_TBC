@@ -8,7 +8,7 @@ local config = {}
 config.enabled = true
 config.size = 28
 config.spacing = 4
-config.perrow = 12
+config.perrow = 1
 config.vgrowth = 1
 config.hgrowth = 1
 
@@ -36,6 +36,7 @@ end
 function m:style(name, index)
 	local button = _G[name..index]
 	if (button.skinned) then return end
+
 	local icon = _G[name..index.."Icon"]
 	local border = _G[name..index.."Border"]
 	local duration = _G[name..index.."Duration"]
@@ -93,11 +94,14 @@ local function update_auras(name, index, filter)
 
 	m:style(name, index)
 
+	local row = math.floor(config.perrow / index)
+
 	if (filter == "HELPFUL") then
 		button:ClearAllPoints()
+
 		if index > 1 and (mod(index, config.perrow) == 1) then
 			if index == config.perrow + 1 then
-				button:SetPoint("RIGHT", m.buff_anchor, "RIGHT", 0, 0)
+				button:SetPoint("RIGHT", m.buff_anchor, "RIGHT", 0, -(config.size + config.spacing))
 			else
 				button:SetPoint("TOPRIGHT", _G[name..(index - BUFFS_PER_ROW)], "TOPRIGHT", 0, 0)
 			end
@@ -195,12 +199,12 @@ local function load()
 	m.buff_anchor = m:create_anchor("Buffs")
 	m.buff_anchor:SetBackdropColor(unpack(bdUI.media.green))
 	m.buff_anchor:SetPoint("TOPRIGHT", Minimap.background, "TOPLEFT", -10, -2)
-	bdMove:set_moveable(m.buff_anchor, nil, nil, 10, 10)
+	bdMove:set_moveable(m.buff_anchor)
 
 	m.debuff_anchor = m:create_anchor("Debuffs")
 	m.debuff_anchor:SetBackdropColor(unpack(bdUI.media.red))
-	m.debuff_anchor:SetPoint("RIGHT", Minimap.background, "LEFT", -10, 0)
-	bdMove:set_moveable(m.debuff_anchor, nil, nil, 10, 10)
+	m.debuff_anchor:SetPoint("CENTER", bdParent, "CENTER", 0, -200)
+	bdMove:set_moveable(m.debuff_anchor)
 
 	m.weapon_anchor = m:create_anchor("Weapons")
 	m.weapon_anchor:SetBackdropColor(unpack(bdUI.media.blue))

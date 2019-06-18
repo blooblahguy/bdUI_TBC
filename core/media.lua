@@ -1,6 +1,14 @@
 --================================================
 -- Media Functions
 --================================================
+function bdUI:set_backdrop_basic(parent)
+	if (parent.background) then return end
+
+	parent:SetBackdrop({bgFile = bdUI.media.flat, insets = {top = -bdUI.border, left = -bdUI.border, right = -bdUI.border, bottom = -bdUI.border}})
+	parent:SetBackdropColor(unpack(bdUI.media.border))
+
+	parent.background = true
+end
 function bdUI:set_backdrop(parent, resize, padding)
 	if (parent.background) then return end
 	padding = padding or 0
