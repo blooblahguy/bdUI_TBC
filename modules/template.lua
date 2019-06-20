@@ -1,14 +1,15 @@
-local bdUI, c, p = bdUI:unpack()
-
 -- Module
 local module_name = "Name"
 bdUI[module_name] = CreateFrame("frame", module_name, bdParent)
-bdUI[module_name].config = {}
 local mod = bdUI[module_name]
 
 -- Config
-local config = bdUI[module_name].config
-config.enabled = true
+local config = bdConfig:helper_config()
+config:add("enabled", {
+	type = "checkbox",
+	value = true,
+	label = "Enable",
+})
 
 
 --===============================================
@@ -25,8 +26,9 @@ config.enabled = true
 -- runs when saved variable are available
 --===============================================
 local function load()
+	config = mod.config -- replace config with SV config
 	if (not config.enabled) then return end
-
+	
 end
 
 --===============================================
@@ -41,4 +43,4 @@ end
 -- Register with the UI
 -- handles a lot of other initialization
 --===============================================
-bdUI:register_module(name, load, config, callback)
+bdUI:register_module(module_name, load, config, callback)

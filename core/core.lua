@@ -61,9 +61,9 @@ bdUI.eventer = CreateFrame("frame", nil, bdParent)
 -- Developer Helpers
 --================================================
 	-- Print to chat (for old clients)
-	print = print or function(message)
-		DEFAULT_CHAT_FRAME:AddMessage(message)
-	end
+	-- print = print or function(message)
+	-- 	DEFAULT_CHAT_FRAME:AddMessage(message)
+	-- end
 	function bdUI:print(message)
 		print(bdUI.colorString.."UI: "..message)
 	end
@@ -105,7 +105,10 @@ bdUI.eventer = CreateFrame("frame", nil, bdParent)
 	bdUI:set_slash_command('DoReadyCheck', DoReadyCheck, 'rc', 'ready')
 	-- lock/unlock
 	bdUI:set_slash_command('ToggleLock', bdMove.toggle_lock, 'bdlock')
-	bdUI:set_slash_command('ResetPositions', bdMove.reset_positions, 'bdreset')
+	bdUI:set_slash_command('ResetPositions', function()
+		BDUI_SAVE = nil
+		bdMove:reset_positions()
+	end, 'bdreset')
 	-- framename
 	bdUI:set_slash_command('Frame', function()
 		print(GetMouseFocus():GetName())

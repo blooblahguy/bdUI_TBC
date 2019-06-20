@@ -1,4 +1,6 @@
-local chat = bdUI.chat
+local module_name = "Chat"
+local mod = bdUI[module_name]
+
 local config = {}
 config.enabled = true
 
@@ -123,7 +125,7 @@ local function load()
 	ChatFrameMenuButton.Show = noop
 	for i = 1, NUM_CHAT_WINDOWS do
 		local chatframe = _G["ChatFrame"..i]
-		chat:skin_chat(chatframe)
+		mod:skin_chat(chatframe)
 	end
 end
 
@@ -131,4 +133,4 @@ local function callback()
 
 end
 
-bdUI:register_module("Chat", load, config, unload)
+bdUI:register_module(module_name, load, config, unload)

@@ -1,6 +1,7 @@
-local config = bdUI.minimap.config
+local mod = bdUI.Minimap
+local config = mod.config
 
-function bdUI.minimap:create_button_frame()
+function mod:create_button_frame()
 
 	-- Button frame
 	Minimap.buttonFrame = CreateFrame("frame", "bdButtonFrame", Minimap)
@@ -10,12 +11,33 @@ function bdUI.minimap:create_button_frame()
 	Minimap.buttonFrame:RegisterEvent("PLAYER_LEVEL_UP")
 	Minimap.buttonFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 	Minimap.buttonFrame:RegisterEvent("UPDATE_FACTION")
-	Minimap.buttonFrame:SetSize(Minimap.background:GetWidth(), 30)
-	Minimap.buttonFrame:SetPoint("TOP", Minimap.background, "BOTTOM", 0, -bdUI.border)
+	Minimap.buttonFrame:SetSize(Minimap.background:GetWidth() - (bdUI.border * 2), 30)
+	Minimap.buttonFrame:SetPoint("TOP", Minimap.background, "BOTTOM", bdUI.border, -bdUI.border)
 	-- Minimap.buttonFrame:SetPoint("TOPLEFT", Minimap.background, "BOTTOMLEFT", 2, -6)
 	-- Minimap.buttonFrame:SetPoint("BOTTOMRIGHT", Minimap.background, "BOTTOMRIGHT", -2, -28)
 	bdMove:set_moveable(Minimap.buttonFrame)
 
+	local bdConfigButton = CreateFrame("button","bdUI_configButton", Minimap.buttonFrame)
+	bdConfigButton.text = bdConfigButton:CreateFontString(nil,"OVERLAY")
+	bdConfigButton.text:SetFont(bdUI.media.font, 14)
+	bdConfigButton.text:SetTextColor(.4,.6,1)
+	bdConfigButton.text:SetText("bd")
+	bdConfigButton.text:SetJustifyH("CENTER")
+	bdConfigButton.text:SetPoint("CENTER", bdConfigButton, "CENTER", -1, -1)
+	bdConfigButton:SetScript("OnEnter", function(self) 
+		self.text:SetTextColor(.6,.8,1) 
+		ShowUIPanel(GameTooltip)
+		GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT", 0, 6)
+		GameTooltip:AddLine("Big Dumb Config")
+		GameTooltip:Show()
+	end)
+	bdConfigButton:SetScript("OnLeave", function(self) 
+		self.text:SetTextColor(.4,.6,1) 
+		GameTooltip:Hide()
+	end)
+	bdConfigButton:SetScript("OnClick", function() bdUI.config_instance:toggle() end)
+
+	-- Find and move buttons
 	local ignoreFrames = {}
 	local hideTextures = {}
 	local manualTarget = {}
@@ -36,11 +58,14 @@ function bdUI.minimap:create_button_frame()
 	hideTextures['Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight'] = true
 	hideTextures['Interface\\Minimap\\UI-Minimap-Background'] = true
 
+	local numChildren = 0
 	local function moveMinimapButtons()
 		if (InCombatLockdown()) then return end
 		
 		local c = {Minimap.buttonFrame:GetChildren()}
 		local d = {Minimap:GetChildren()}
+		-- if (#d == numChildren) then return end
+		-- numChildren = #d
 		for k, v in pairs(d) do table.insert(c,v) end
 		-- table.insert(c,_G["DugisOnOffButton"])
 		local last = nil
@@ -53,7 +78,6 @@ function bdUI.minimap:create_button_frame()
 				(strfind(n, "LibDB") or strfind(n, "Button") or strfind(n, "Btn")) and 
 				not ignoreFrames[n]
 			)) then 
-				--print(f:GetName())
 				if (not f.skinned) then
 					f:SetWidth(config.buttonsize)
 					f:SetHeight(config.buttonsize)
@@ -111,7 +135,7 @@ function bdUI.minimap:create_button_frame()
 				f:ClearAllPoints()
 
 				if (last) then
-					f:SetPoint("LEFT", last, "RIGHT", 6, 0)		
+					f:SetPoint("LEFT", last, "RIGHT", bdUI.border + 3, 0)		
 				else
 					f:SetPoint("TOPLEFT", Minimap.buttonFrame, "TOPLEFT", 0, 0)
 				end

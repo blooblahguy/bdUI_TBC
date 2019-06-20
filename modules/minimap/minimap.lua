@@ -1,11 +1,19 @@
--- Config
-bdUI.minimap = CreateFrame("frame", nil, bdParent)
-bdUI.minimap.config = {}
+-- Module
+local module_name = "Minimap"
+bdUI[module_name] = CreateFrame("frame", module_name, bdParent)
+local mod = bdUI[module_name]
 
-local config = bdUI.minimap.config
-config.enabled = true
+-- Config
+local config = {}
 config.size = 300
-config.buttonsize = 24
+config.buttonsize = 22
+mod.config = config
+-- local config = bdConfig:helper_config()
+-- config:add("enabled", {
+-- 	type = "checkbox",
+-- 	value = true,
+-- 	label = "Enable",
+-- })
 
 
 --===============================================
@@ -175,7 +183,7 @@ local function load()
 	end)
 
 
-	bdUI.minimap:create_button_frame()
+	mod:create_button_frame()
 end
 
 --===============================================
@@ -186,7 +194,7 @@ local function callback()
 
 end
 
-bdUI:register_module("Minimap", load, config, callback)
+bdUI:register_module(module_name, load, config, callback)
 
 
 

@@ -1,23 +1,45 @@
 -- Module
-local module_name = "bdBuffs"
+local module_name = "Buffs"
 bdUI[module_name] = CreateFrame("frame", module_name, UIParent)
-local m = bdUI[module_name]
+local mod = bdUI[module_name]
 
 -- Config
-local config = {}
-config.enabled = true
-config.size = 28
-config.spacing = 4
-config.perrow = 1
-config.vgrowth = 1
-config.hgrowth = 1
-
+local config = bdConfig:helper_config()
+config:add("enabled", {
+	type = "checkbox",
+	value = true,
+	label = "Enable",
+})
+config:add("size", {
+	type = "slider",
+	min = 12,
+	max = 60,
+	value = 28,
+	step = 2,
+	label = "Buff Size"
+})
+config:add("spacing", {
+	type = "slider",
+	min = 0,
+	max = 12,
+	value = 2,
+	step = 1,
+	label = "Spacing"
+})
+config:add("perrow", {
+	type = "slider",
+	min = 1,
+	max = 40,
+	value = 20,
+	step = 1,
+	label = "Buffs Per Row"
+})
 
 --===============================================
 -- Custom functionality
 -- place custom functionality here
 --===============================================
-function m:create_anchor(name)
+function mod:create_anchor(name)
 	local anchor = CreateFrame("frame", name, UIParent)
 
 	anchor:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
@@ -33,8 +55,9 @@ function m:create_anchor(name)
 end
 
 -- make a button pretty
-function m:style(name, index)
+function mod:style(name, index)
 	local button = _G[name..index]
+	button:SetSize(config.size)
 	if (button.skinned) then return end
 
 	local icon = _G[name..index.."Icon"]
@@ -42,7 +65,6 @@ function m:style(name, index)
 	local duration = _G[name..index.."Duration"]
 	local count = _G[name..index.."Count"]
 
-	button:SetSize(config.size)
 	bdUI:set_backdrop(button)
 
 	count:ClearAllPoints()
@@ -68,7 +90,7 @@ function m:style(name, index)
 end
 
 -- Initial setup of all auras
-function m:setup_auras()
+function mod:setup_auras()
 	BUFF_ACTUAL_DISPLAY = 0
 	for i = 1, BUFF_MAX_DISPLAY do
 		if BuffButton_Update("BuffButton", i, "HELPFUL") then
@@ -92,30 +114,30 @@ local function update_auras(name, index, filter)
 	local button = _G[name..index]
 	local rows = ceil(BUFF_ACTUAL_DISPLAY / config.perrow)
 
-	m:style(name, index)
+	mod:style(name, index)
 
 	local row = math.floor(config.perrow / index)
 
 	if (filter == "HELPFUL") then
 		button:ClearAllPoints()
 
-		if index > 1 and (mod(index, config.perrow) == 1) then
+		if index > 1 and (math.modf(index, config.perrow) == 1) then
 			if index == config.perrow + 1 then
-				button:SetPoint("RIGHT", m.buff_anchor, "RIGHT", 0, -(config.size + config.spacing))
+				button:SetPoint("RIGHT", mod.buff_anchor, "RIGHT", 0, -(config.size + (config.spacing + bdUI.border)))
 			else
 				button:SetPoint("TOPRIGHT", _G[name..(index - BUFFS_PER_ROW)], "TOPRIGHT", 0, 0)
 			end
 		elseif index == 1 then
 			mainhand, _, _, offhand = GetWeaponEnchantInfo()
 			if mainhand and offhand then
-				button:SetPoint("RIGHT", TempEnchant2, "LEFT", -config.spacing, 0)
+				button:SetPoint("RIGHT", TempEnchant2, "LEFT", -(config.spacing + bdUI.border), 0)
 			elseif (mainhand and not offhand) or (offhand and not mainhand) then
-				button:SetPoint("RIGHT", TempEnchant1, "LEFT", -config.spacing, 0)
+				button:SetPoint("RIGHT", TempEnchant1, "LEFT", -(config.spacing + bdUI.border), 0)
 			else
-				button:SetPoint("TOPRIGHT", m.buff_anchor, "TOPRIGHT", 0, 0)
+				button:SetPoint("TOPRIGHT", mod.buff_anchor, "TOPRIGHT", 0, 0)
 			end
 		else
-			button:SetPoint("RIGHT", _G[name..(index - 1)], "LEFT", -config.spacing, 0)
+			button:SetPoint("RIGHT", _G[name..(index - 1)], "LEFT", -(config.spacing + bdUI.border), 0)
 		end
 
 		if index > (config.perrow * 2) then
@@ -127,9 +149,9 @@ local function update_auras(name, index, filter)
 	else
 		button:ClearAllPoints()
 		if index == 1 then
-			button:SetPoint("BOTTOMRIGHT", m.debuff_anchor, "BOTTOMRIGHT", 0, 0)
+			button:SetPoint("BOTTOMRIGHT", mod.debuff_anchor, "BOTTOMRIGHT", 0, 0)
 		else
-			button:SetPoint("RIGHT", _G[name..(index - 1)], "LEFT", -config.spacing, 0)
+			button:SetPoint("RIGHT", _G[name..(index - 1)], "LEFT", -(config.spacing + bdUI.border), 0)
 		end
 
 		if index > config.perrow then
@@ -140,23 +162,23 @@ local function update_auras(name, index, filter)
 	end
 end
 
-function m:update_buff(name, index, filter)
+function mod:update_buff(name, index, filter)
 
 end
-function m:update_debuff(name, index, filter)
+function mod:update_debuff(name, index, filter)
 
 end
 
-function m:update_enchants(name, index, filter)
+function mod:update_enchants(name, index, filter)
 	TemporaryEnchantFrame:ClearAllPoints()
-	TemporaryEnchantFrame:SetPoint("TOPRIGHT", m.buff_anchor, "TOPRIGHT", 0, 0)
+	TemporaryEnchantFrame:SetPoint("TOPRIGHT", mod.buff_anchor, "TOPRIGHT", 0, 0)
 
 	for i = 1, 2 do
 		_G["TempEnchant"..i]:ClearAllPoints()
 		if i == 1 then
-			_G["TempEnchant"..i]:SetPoint("TOPRIGHT", m.buff_anchor, "TOPRIGHT")
+			_G["TempEnchant"..i]:SetPoint("TOPRIGHT", mod.buff_anchor, "TOPRIGHT")
 		else
-			_G["TempEnchant"..i]:SetPoint("RIGHT", TempEnchant1, "LEFT", -config.spacing, 0)
+			_G["TempEnchant"..i]:SetPoint("RIGHT", TempEnchant1, "LEFT", -(config.spacing + bdUI.border), 0)
 		end
 
 		self:style("TempEnchant", i)
@@ -192,23 +214,24 @@ end
 -- runs when saved variable are available
 --===============================================
 local function load()
+	config = mod.config
 	if (not config.enabled) then return end
 
 	BUFF_WARNING_TIME = 0
 
-	m.buff_anchor = m:create_anchor("Buffs")
-	m.buff_anchor:SetBackdropColor(unpack(bdUI.media.green))
-	m.buff_anchor:SetPoint("TOPRIGHT", Minimap.background, "TOPLEFT", -10, -2)
-	bdMove:set_moveable(m.buff_anchor)
+	mod.buff_anchor = mod:create_anchor("Buffs")
+	mod.buff_anchor:SetBackdropColor(unpack(bdUI.media.green))
+	mod.buff_anchor:SetPoint("TOPRIGHT", Minimap.background, "TOPLEFT", -10, -2)
+	bdMove:set_moveable(mod.buff_anchor)
 
-	m.debuff_anchor = m:create_anchor("Debuffs")
-	m.debuff_anchor:SetBackdropColor(unpack(bdUI.media.red))
-	m.debuff_anchor:SetPoint("CENTER", bdParent, "CENTER", 0, -200)
-	bdMove:set_moveable(m.debuff_anchor)
+	mod.debuff_anchor = mod:create_anchor("Debuffs")
+	mod.debuff_anchor:SetBackdropColor(unpack(bdUI.media.red))
+	mod.debuff_anchor:SetPoint("CENTER", bdParent, "CENTER", 0, -200)
+	bdMove:set_moveable(mod.debuff_anchor)
 
-	m.weapon_anchor = m:create_anchor("Weapons")
-	m.weapon_anchor:SetBackdropColor(unpack(bdUI.media.blue))
-	m.weapon_anchor:SetPoint("BOTTOMRIGHT", Minimap.background, "BOTTOMLEFT", -10, 2)
+	mod.weapon_anchor = mod:create_anchor("Weapons")
+	mod.weapon_anchor:SetBackdropColor(unpack(bdUI.media.blue))
+	mod.weapon_anchor:SetPoint("BOTTOMRIGHT", Minimap.background, "BOTTOMLEFT", -10, 2)
 
 	-- Hook events
 	BuffFrame_UpdateAllBuffAnchors = BuffFrame_UpdateAllBuffAnchors or noop -- for older clients
@@ -217,7 +240,7 @@ local function load()
 	hooksecurefunc("DebuffButton_UpdateAnchors", update_auras)
 
 	hooksecurefunc("BuffButton_UpdateAnchors", update_auras) -- For positioning
-	-- hooksecurefunc("BuffButton_OnUpdate", m.update_auras) -- For timers
+	-- hooksecurefunc("BuffButton_OnUpdate", mod.update_auras) -- For timers
 	hooksecurefunc("BuffButton_Update", update_colors) -- For colors
 
 	-- displays who cast the aura
@@ -231,7 +254,7 @@ local function load()
 		end
 	end)
 
-	m:setup_auras()
+	mod:setup_auras()
 end
 
 --===============================================
@@ -239,7 +262,7 @@ end
 -- runs when the configuration changes
 --===============================================
 local function callback()
-
+	mod:setup_auras()
 end
 
 bdUI:register_module(module_name, load, config, callback)
@@ -277,10 +300,3 @@ local function updateTime(button, timeLeft)
 		end
 	end
 end
-
-
--- UpdateBuff()
--- hooksecurefunc("BuffFrame_UpdateAllBuffAnchors", UpdateBuff)
--- hooksecurefunc("DebuffButton_UpdateAnchors", UpdateDebuff)
--- hooksecurefunc("AuraButton_UpdateDuration", updateTime)
--- SetCVar("consolidateBuffs", 0)

@@ -133,14 +133,12 @@ function bdMove:toggle_lock()
 	if (bdMove.unlocked) then
 		-- lock
 		bdMove.unlocked = false
-		print("Addons locked")
 		for k, frame in pairs(bdMove.moveable_frames) do
 			frame:lock()
 		end
 	else
 		-- unlock
 		bdMove.unlocked = true
-		print("Addons unlocked")
 		for k, frame in pairs(bdMove.moveable_frames) do
 			frame:unlock()
 		end

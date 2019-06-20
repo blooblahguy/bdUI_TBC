@@ -9,8 +9,8 @@ function bdUI:register_module(name, load, config, callback)
 	local module = {}
 	module.load = load
 	module.name = name
-	module.callback = callback or noop
-	module.config = config or {}
+	module.config = config
+	module.callback = callback or noop	
 
 	table.insert(bdUI.modules, module)
 end
@@ -28,11 +28,9 @@ end
 -- Load all modules
 function bdUI:load_modules()
 	for k, module in pairs(bdUI.modules) do
-		if (module.config.enabled) then
-			module:load()
-			-- load config here
-			module:callback()
-		end
+		bdUI[module.name].config = bdUI.config_instance:register_module(module.name, module.config, module.callback)
+		module:load()
+		module:callback()
 	end
 end
 

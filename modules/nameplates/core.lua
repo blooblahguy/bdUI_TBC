@@ -125,4 +125,4 @@ end
 -- Register with the UI
 -- handles a lot of other initialization
 --===============================================
-bdUI:register_module(name, load, config, callback)
+bdUI:register_module(module_name, load, config, callback)

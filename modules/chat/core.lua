@@ -1,4 +1,8 @@
-bdUI.chat = CreateFrame("frame", "bdChat", bdParent)
+-- Module
+local module_name = "Chat"
+bdUI[module_name] = CreateFrame("frame", module_name, bdParent)
+local mod = bdUI[module_name]
+
 
 local tabs = {"Left","Middle","Right","SelectedLeft","SelectedRight","SelectedMiddle","HighlightLeft","HighlightMiddle","HighlightRight"}
 
@@ -52,9 +56,12 @@ local function add_message(self, text, ...)
 	--url search
 	text = text:gsub('([wWhH][wWtT][wWtT][%.pP]%S+[^%p%s])', '|cffffffff|Hurl:%1|h[%1]|h|r')
 
-
-	
-	return self.DefaultAddMessage(self, text, ...)
+	if (text:find("Arena Queue: Team Joined") >= 0) then
+		-- print("areana")
+		text = "";
+	end
+	-- else
+		return self.DefaultAddMessage(self, text, ...)
 end
 
 --=================================================================
@@ -119,7 +126,7 @@ end
 --==================================================================
 -- Make frame pretty
 --==================================================================
-function bdUI.chat:skin_chat(frame)
+function mod:skin_chat(frame)
 	if not frame then return end
 
 	local name = frame:GetName()
@@ -128,7 +135,7 @@ function bdUI.chat:skin_chat(frame)
 	local index = string.gsub(name,"ChatFrame","")
 	if (index ~= 2) then
 		frame.DefaultAddMessage = frame.AddMessage
-		frame.AddMessage = bdUI.chat.add_message
+		frame.AddMessage = mod.add_message
 	end
 	
 	--main chat frame
