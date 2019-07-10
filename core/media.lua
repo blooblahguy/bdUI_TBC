@@ -9,6 +9,7 @@ function bdUI:set_backdrop_basic(parent)
 
 	parent.background = true
 end
+
 function bdUI:set_backdrop(parent, resize, padding)
 	if (parent.background) then return end
 	padding = padding or 0
@@ -23,8 +24,8 @@ function bdUI:set_backdrop(parent, resize, padding)
 	parent.background:SetPoint("TOPLEFT", frame, "TOPLEFT", -padding, padding)
 	parent.background:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", padding, -padding)
 	parent.background:SetVertexColor(unpack(bdUI.media.backdrop))
-	parent.background.protected = true
 	parent.background.SetFrameLevel = bdUI.noop
+	parent.background.protected = true -- so this texture doesn't get stripped
 	
 	parent.border = frame:CreateTexture(nil, "BACKGROUND", nil, 0)
 	parent.border:SetTexture(bdUI.media.flat)
@@ -32,7 +33,7 @@ function bdUI:set_backdrop(parent, resize, padding)
 	parent.border:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", (padding + border), -(padding + border))
 	parent.border:SetVertexColor(unpack(bdUI.media.border))
 	parent.border.SetFrameLevel = bdUI.noop
-	parent.border.protected = true
+	parent.border.protected = true -- so this texture doesn't get stripped
 end
 
 function bdUI:set_highlight(frame, icon)

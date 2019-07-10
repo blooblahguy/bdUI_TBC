@@ -359,10 +359,10 @@ local function load()
 	-- pet:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", 0, -config.castbarheight-2)
 	-- -- bdCore:makeMovable(pet)
 
-	-- -- focus
-	-- local focus = oUF:Spawn("focus")
-	-- focus:SetPoint("TOP", UIParent, "TOP", 0, -30)
-	-- bdCore:makeMovable(focus)
+	-- focus
+	local focus = oUF:Spawn("focus")
+	focus:SetPoint("TOP", UIParent, "TOP", 0, -30)
+	bdMove:set_moveable(focus)
 end
 
 --===============================================

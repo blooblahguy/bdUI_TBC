@@ -56,7 +56,7 @@ local function add_message(self, text, ...)
 	--url search
 	text = text:gsub('([wWhH][wWtT][wWtT][%.pP]%S+[^%p%s])', '|cffffffff|Hurl:%1|h[%1]|h|r')
 
-	if (text:find("Arena Queue: Team Joined") >= 0) then
+	if (strfind(text, "Arena Queue: Team Joined") ~= nil) then
 		-- print("areana")
 		text = "";
 	end

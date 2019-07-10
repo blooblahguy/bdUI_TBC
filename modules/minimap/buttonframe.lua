@@ -64,8 +64,8 @@ function mod:create_button_frame()
 		
 		local c = {Minimap.buttonFrame:GetChildren()}
 		local d = {Minimap:GetChildren()}
-		-- if (#d == numChildren) then return end
-		-- numChildren = #d
+		if (#d == numChildren) then return end
+		numChildren = #d
 		for k, v in pairs(d) do table.insert(c,v) end
 		-- table.insert(c,_G["DugisOnOffButton"])
 		local last = nil
